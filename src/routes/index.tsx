@@ -91,6 +91,7 @@ function Index() {
           ) : (
             <form onSubmit={submit} className="space-y-4">
               <h2 className="text-center font-display text-3xl text-primary">Confirme sua presença</h2>
+              <input className={field} type="tel" placeholder="Seu WhatsApp com DDD" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30} />
               <input className={field} placeholder="Seu nome completo" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} />
               <div className="grid grid-cols-2 gap-3">
                 {[true, false].map((v) => (
@@ -101,16 +102,29 @@ function Index() {
                 ))}
               </div>
               {attending && (
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="text-sm text-muted-foreground">Adultos
-                    <input type="number" min={1} max={20} className={`${field} mt-1`} value={adults} onChange={(e) => setAdults(Math.max(0, Math.min(20, +e.target.value)))} />
-                  </label>
-                  <label className="text-sm text-muted-foreground">Crianças
-                    <input type="number" min={0} max={20} className={`${field} mt-1`} value={children} onChange={(e) => setChildren(Math.max(0, Math.min(20, +e.target.value)))} />
-                  </label>
+                <div className="space-y-3">
+                  <p className="text-sm font-medium text-muted-foreground">Quem vai com você?</p>
+                  {companions.map((c, i) => (
+                    <div key={i} className="flex gap-2">
+                      <input className={`${field} flex-[3]`} placeholder="Nome do acompanhante" value={c.name} maxLength={120}
+                        onChange={(e) => setCompanions(companions.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+                      <input className={`${field} flex-[2]`} placeholder="Parentesco" value={c.relation} maxLength={60} list="relations"
+                        onChange={(e) => setCompanions(companions.map((x, j) => (j === i ? { ...x, relation: e.target.value } : x)))} />
+                      <button type="button" aria-label="Remover acompanhante" onClick={() => setCompanions(companions.filter((_, j) => j !== i))}
+                        className="glass-input shrink-0 rounded-2xl px-4 text-primary hover:bg-primary/10">×</button>
+                    </div>
+                  ))}
+                  <datalist id="relations">
+                    {["Esposo(a)", "Filho(a)", "Pai", "Mãe", "Irmão(ã)", "Avô(ó)", "Tio(a)", "Primo(a)", "Sobrinho(a)", "Namorado(a)", "Amigo(a)"].map((r) => <option key={r} value={r} />)}
+                  </datalist>
+                  {companions.length < 20 && (
+                    <button type="button" onClick={() => setCompanions([...companions, { name: "", relation: "" }])}
+                      className="w-full rounded-2xl border border-dashed border-primary/40 py-3 text-primary transition hover:bg-primary/10">
+                      + Adicionar acompanhante
+                    </button>
+                  )}
                 </div>
               )}
-              <input className={field} placeholder="WhatsApp (opcional)" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30} />
               <textarea className={`${field} min-h-24 resize-none`} placeholder="Deixe um recadinho para a Elena (opcional)" value={message} onChange={(e) => setMessage(e.target.value)} maxLength={500} />
               {error && <p className="text-center text-sm text-destructive">{error}</p>}
               <button type="submit" disabled={status === "sending"} className="btn-bloom w-full rounded-full py-4 text-lg font-semibold transition hover:scale-[1.02] disabled:opacity-60">
