@@ -1,0 +1,1 @@
+ALTER TABLE public.rsvp_responses ADD COLUMN companions jsonb NOT NULL DEFAULT '[]'::jsonb;

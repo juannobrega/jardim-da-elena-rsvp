@@ -19,6 +19,7 @@ export type Database = {
           adults: number
           attending: boolean
           children: number
+          companions: Json
           created_at: string
           id: string
           message: string | null
@@ -29,6 +30,7 @@ export type Database = {
           adults?: number
           attending: boolean
           children?: number
+          companions?: Json
           created_at?: string
           id?: string
           message?: string | null
@@ -39,6 +41,7 @@ export type Database = {
           adults?: number
           attending?: boolean
           children?: number
+          companions?: Json
           created_at?: string
           id?: string
           message?: string | null
