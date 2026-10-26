@@ -91,8 +91,8 @@ function Index() {
           ) : (
             <form onSubmit={submit} className="space-y-4">
               <h2 className="text-center font-display text-3xl text-primary">Confirme sua presença</h2>
-              <input className={field} type="tel" placeholder="Seu WhatsApp com DDD" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30} />
               <input className={field} placeholder="Seu nome completo" value={name} onChange={(e) => setName(e.target.value)} maxLength={120} />
+              <input className={field} type="tel" placeholder="Seu WhatsApp com DDD" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={30} />
               <div className="grid grid-cols-2 gap-3">
                 {[true, false].map((v) => (
                   <button type="button" key={String(v)} onClick={() => setAttending(v)}
