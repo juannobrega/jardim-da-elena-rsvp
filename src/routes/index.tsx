@@ -27,8 +27,7 @@ function Butterfly({ className }: { className?: string }) {
 function Index() {
   const [attending, setAttending] = useState<boolean | null>(null);
   const [name, setName] = useState("");
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
+  const [companions, setCompanions] = useState<{ name: string; relation: string }[]>([]);
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "sending" | "done" | "error">("idle");
@@ -37,15 +36,19 @@ function Index() {
   async function submit(e: FormEvent) {
     e.preventDefault();
     if (!name.trim()) return setError("Por favor, informe seu nome.");
+    if (phone.replace(/\D/g, "").length < 10) return setError("Informe seu WhatsApp com DDD.");
     if (attending === null) return setError("Conte pra gente se você vem 💗");
+    const list = attending ? companions.filter((c) => c.name.trim()) : [];
+    if (list.some((c) => !c.relation.trim())) return setError("Informe o grau de parentesco de cada acompanhante.");
     setError("");
     setStatus("sending");
     const { error } = await supabase.from("rsvp_responses").insert({
       name: name.trim().slice(0, 120),
       attending,
-      adults: attending ? adults : 0,
-      children: attending ? children : 0,
-      phone: phone.trim().slice(0, 30) || null,
+      adults: attending ? 1 + list.length : 0,
+      children: 0,
+      companions: list.slice(0, 20).map((c) => ({ name: c.name.trim().slice(0, 120), relation: c.relation.trim().slice(0, 60) })),
+      phone: phone.trim().slice(0, 30),
       message: message.trim().slice(0, 500) || null,
     });
     if (error) {
